@@ -4,15 +4,13 @@ import { fileURLToPath } from 'url';
 import { initDatabase } from './db.js';
 import routes from './routes.js';
 
-// Initialize the database before starting the server
+// Initialize the database
 await initDatabase();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-
-const port = parseInt(process.env.PORT) || process.argv[3] || 8080;
 
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
@@ -21,7 +19,4 @@ app.use(express.json());
 // Use the routes defined in routes.js
 app.use('/', routes);
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}`);
-});
+export default app;
