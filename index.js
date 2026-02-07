@@ -1,22 +1,27 @@
-const express = require('express');
-const path = require('path')
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { initDatabase } from './db.js';
+import routes from './routes.js';
+
+// Initialize the database before starting the server
+await initDatabase();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
 const port = parseInt(process.env.PORT) || process.argv[3] || 8080;
 
-app.use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs');
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.render('index');
-});
+// Use the routes defined in routes.js
+app.use('/', routes);
 
-app.get('/api', (req, res) => {
-  res.json({"msg": "Hello world"});
-});
-
+// Start the server
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
-})
+});
