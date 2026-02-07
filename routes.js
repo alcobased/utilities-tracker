@@ -1,20 +1,8 @@
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { generateReadingId } from './utils.js';
 import { addReading, getAllReadings, getReadingById, updateReading, deleteReading, DuplicateEntryError, ReadingNotFoundError } from './db.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const router = express.Router();
-
-// --- Frontend Route ---
-router.get('/', (req, res) => {
-  const htmlPath = path.join(path.dirname(__dirname), 'public', 'index.html');
-  res.sendFile(htmlPath);
-});
-
 
 // --- API Routes ---
 
