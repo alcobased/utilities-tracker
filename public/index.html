@@ -3,40 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energy Readings</title>
+    <title>Utility Readings</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Energy Readings</h1>
+    <h1>Utility Readings</h1>
 
     <div class="container">
-        <div class="form-container">
-            <h2>Add New Reading</h2>
-            <form id="reading-form">
-                <div class="form-group">
-                    <label for="type">Type:</label>
-                    <select id="type" name="type" required>
-                        <option value="electricity">Electricity</option>
-                        <option value="gas">Gas</option>
-                        <option value="water">Water</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="value">Value:</label>
-                    <input type="number" id="value" name="value" step="0.1" required>
-                </div>
-                <div class="form-group">
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
-                <button type="submit">Add Reading</button>
-            </form>
-        </div>
+        <h2>Add / Update Readings</h2>
+        <form id="reading-form">
+            <p>Select a date to define the consumption period.</p>
+            <input type="date" id="date-input" required>
+            
+            <div id="metrics-fields" class="metrics-container">
+                <input type="number" step="0.01" id="gas-total-input" placeholder="Total Gas Reading">
+                <input type="number" step="0.01" id="gas-hh2-input" placeholder="Household 2 Gas">
+                <input type="number" step="0.01" id="electricity-total-input" placeholder="Total Electricity">
+                <!-- Add other metric inputs here as needed -->
+            </div>
 
-        <div class="readings-container">
-            <h2>Existing Readings</h2>
-            <ul id="readings-list"></ul>
-        </div>
+            <button type="submit">Save Readings</button>
+        </form>
+
+        <h2>Recorded Readings</h2>
+        <table id="readings-table">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Gas (Total)</th>
+                    <th>Gas (HH2)</th>
+                    <th>Gas (HH1, Calc.)</th>
+                    <th>Electricity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="readings-body">
+                <!-- Data will be populated here -->
+            </tbody>
+        </table>
     </div>
 
     <script src="script.js"></script>

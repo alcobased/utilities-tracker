@@ -1,96 +1,77 @@
 import express from 'express';
-import { generateReadingId } from './utils.js';
-import { addReading, getAllReadings, getReadingById, updateReading, deleteReading, DuplicateEntryError, ReadingNotFoundError } from './db.js';
+import {
+    upsertReading,
+    getAllReadings,
+    getReading,
+    deleteReading,
+} from './db.js';
+import { calculateHousehold1 } from './utils.js';
 
 const router = express.Router();
 
-// --- API Routes ---
+// POST (Upsert) a reading for a specific period
+router.post('/readings/:periodId', async (req, res) => {
+    const { periodId } = req.params;
+    const metrics = req.body; // e.g., { "gas_total": 2500, "electricity_total": 10100 }
 
-// Welcome route
-router.get('/api', (req, res) => {
-  res.json({ msg: "Hello world" });
-});
-
-// Get all readings
-router.get('/api/readings', (req, res) => {
-  const readings = getAllReadings();
-  res.json(readings);
-});
-
-// Get a single reading by ID
-router.get('/api/readings/:id', (req, res) => {
-  try {
-    const { id } = req.params;
-    const reading = getReadingById(id);
-    res.json(reading);
-  } catch (error) {
-    if (error instanceof ReadingNotFoundError) {
-      return res.status(404).json({ error: error.message });
-    }
-    console.error('Failed to get reading:', error);
-    res.status(500).json({ error: 'An unexpected error occurred.' });
-  }
-});
-
-// Add a new reading
-router.post('/api/readings', async (req, res) => {
-  try {
-    const { type, value, date } = req.body;
-    if (!type || !value || !date) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (!periodId || Object.keys(metrics).length === 0) {
+        return res.status(400).json({ error: 'Period ID and at least one metric are required.' });
     }
 
-    const generatedId = generateReadingId();
-    await addReading(generatedId, type, value, date);
-
-    res.status(201).json({ message: 'Reading added successfully' });
-
-  } catch (error) {
-    if (error instanceof DuplicateEntryError) {
-      return res.status(409).json({ error: error.message });
+    try {
+        const updatedReading = await upsertReading(periodId, metrics);
+        res.status(200).json(updatedReading);
+    } catch (error) {
+        console.error('Error upserting reading:', error);
+        res.status(500).json({ error: 'Failed to save reading.' });
     }
-    console.error('Failed to add reading:', error);
-    res.status(500).json({ error: 'An unexpected error occurred.' });
-  }
 });
 
-// Update an existing reading
-router.put('/api/readings/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { type, value, date } = req.body;
-
-    if (!type || !value || !date) {
-      return res.status(400).json({ error: 'Missing required fields' });
+// GET all readings
+router.get('/readings', async (req, res) => {
+    try {
+        const readings = await getAllReadings();
+        // Augment each reading with the calculated value before sending
+        const augmentedReadings = readings.map(reading => ({
+            ...reading,
+            gas_household1: calculateHousehold1(reading),
+        }));
+        res.json(augmentedReadings);
+    } catch (error) {
+        console.error('Error fetching readings:', error);
+        res.status(500).json({ error: 'Failed to fetch readings.' });
     }
-
-    await updateReading(id, type, value, date);
-
-    res.status(200).json({ message: `Reading for period ${id} updated.` });
-
-  } catch (error) {
-    if (error instanceof ReadingNotFoundError) {
-      return res.status(404).json({ error: error.message });
-    }
-    console.error('Failed to update reading:', error);
-    res.status(500).json({ error: 'An unexpected error occurred.' });
-  }
 });
 
-// Delete a reading
-router.delete('/api/readings/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    await deleteReading(id);
-    res.status(200).json({ message: `Reading for period ${id} deleted.` });
-  } catch (error) {
-    if (error instanceof ReadingNotFoundError) {
-      return res.status(404).json({ error: error.message });
+// GET a single reading by period ID
+router.get('/readings/:periodId', async (req, res) => {
+    try {
+        const reading = await getReading(req.params.periodId);
+        if (reading) {
+            const augmentedReading = {
+                ...reading,
+                id: req.params.periodId, // Add the id to the response
+                gas_household1: calculateHousehold1(reading),
+            };
+            res.json(augmentedReading);
+        } else {
+            res.status(404).json({ error: 'Reading not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching reading:', error);
+        res.status(500).json({ error: 'Failed to fetch reading.' });
     }
-    console.error('Failed to delete reading:', error);
-    res.status(500).json({ error: 'An unexpected error occurred.' });
-  }
 });
 
+// DELETE a reading by period ID
+router.delete('/readings/:periodId', async (req, res) => {
+    try {
+        await deleteReading(req.params.periodId);
+        res.status(204).send(); // No content
+    } catch (error) {
+        console.error('Error deleting reading:', error);
+        res.status(500).json({ error: 'Failed to delete reading.' });
+    }
+});
 
 export default router;

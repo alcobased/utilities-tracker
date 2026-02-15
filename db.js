@@ -1,96 +1,87 @@
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 
-// Custom error for handling duplicate entries
-export class DuplicateEntryError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'DuplicateEntryError';
-  }
-}
-
-// Custom error for handling not found entries
-export class ReadingNotFoundError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'ReadingNotFoundError';
-  }
-}
-
-const defaultData = {
-  readings: [],
-  settings: {
-    units: 'metric'
-  }
-};
-
+// Configure lowdb to use a JSON file for storage
 const adapter = new JSONFile('db.json');
-const db = new Low(adapter, defaultData);
-
-export const initDatabase = async () => {
-  await db.read();
-};
+const db = new Low(adapter, { readings: {}, settings: {} });
 
 /**
- * Adds a new reading to the database, preventing duplicates by id.
+ * Reads the initial data from the database file.
  */
-export const addReading = async (id, type, value, date) => {
-  const existingReading = db.data.readings.find(r => r.id === id);
-
-  if (existingReading) {
-    throw new DuplicateEntryError(`A reading for the period ${id} already exists.`);
-  }
-
-  const newReading = { id, type, value, date };
-  db.data.readings.push(newReading);
-  await db.write();
-};
+async function initDatabase() {
+    await db.read();
+}
 
 /**
- * Updates an existing reading in the database.
- * @throws {ReadingNotFoundError} If a reading with the given id is not found.
+ * Upserts (updates or inserts) one or more readings for a specific period.
+ * @param {string} periodId - The ID of the period (e.g., "2024/05-06").
+ * @param {object} metrics - An object containing the metrics to update (e.g., { gas_total: 2500 }).
  */
-export const updateReading = async (id, type, value, date) => {
-  const readingIndex = db.data.readings.findIndex(r => r.id === id);
+async function upsertReading(periodId, metrics) {
+    await db.read();
+    db.data.readings = db.data.readings || {}; // Ensure the readings object exists
 
-  if (readingIndex === -1) {
-    throw new ReadingNotFoundError(`A reading for the period ${id} was not found.`);
-  }
+    // Ensure the specific period object exists
+    if (!db.data.readings[periodId]) {
+        db.data.readings[periodId] = {};
+    }
 
-  // Replace the existing reading's data
-  db.data.readings[readingIndex] = { id, type, value, date };
+    const now = new Date().toISOString();
 
-  await db.write();
-};
+    // Iterate over the metrics provided by the user and update them
+    for (const key in metrics) {
+        if (Object.prototype.hasOwnProperty.call(metrics, key)) {
+            db.data.readings[periodId][key] = {
+                value: metrics[key],
+                updatedAt: now,
+            };
+        }
+    }
+
+    await db.write();
+    return db.data.readings[periodId];
+}
 
 /**
- * Deletes a reading from the database.
- * @throws {ReadingNotFoundError} If a reading with the given id is not found.
+ * Retrieves all readings, transforming them into an array.
+ * @returns {Array<object>} An array of all readings.
  */
-export const deleteReading = async (id) => {
-  const initialLength = db.data.readings.length;
-  db.data.readings = db.data.readings.filter(r => r.id !== id);
-
-  if (db.data.readings.length === initialLength) {
-    throw new ReadingNotFoundError(`A reading for the period ${id} was not found.`);
-  }
-
-  await db.write();
-};
+async function getAllReadings() {
+    await db.read();
+    const readingsObject = db.data.readings || {};
+    // Transform the object into an array for easier use on the frontend
+    return Object.keys(readingsObject).map(id => ({
+        id,
+        ...readingsObject[id],
+    }));
+}
 
 /**
- * Gets a single reading by its ID.
- * @throws {ReadingNotFoundError} If a reading with the given id is not found.
+ * Retrieves a single reading by its period ID.
+ * @param {string} periodId - The ID of the period.
+ * @returns {object | undefined} The reading object or undefined if not found.
  */
-export const getReadingById = (id) => {
-  const reading = db.data.readings.find(r => r.id === id);
-  if (!reading) {
-    throw new ReadingNotFoundError(`A reading for the period ${id} was not found.`);
-  }
-  return reading;
-};
+async function getReading(periodId) {
+    await db.read();
+    return db.data.readings ? db.data.readings[periodId] : undefined;
+}
 
+/**
+ * Deletes a reading for a specific period.
+ * @param {string} periodId - The ID of the period to delete.
+ */
+async function deleteReading(periodId) {
+    await db.read();
+    if (db.data.readings && db.data.readings[periodId]) {
+        delete db.data.readings[periodId];
+        await db.write();
+    }
+}
 
-export const getAllReadings = () => {
-  return db.data.readings;
+export {
+    initDatabase,
+    upsertReading,
+    getAllReadings,
+    getReading,
+    deleteReading,
 };

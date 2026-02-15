@@ -16,7 +16,7 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Use the routes defined in routes.js
-app.use('/', routes);
+// Use the routes defined in routes.js, with the /api prefix
+app.use('/api', routes);
 
 export default app;

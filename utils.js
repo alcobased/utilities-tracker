@@ -1,19 +1,23 @@
 /**
- * Generates a reading ID in "YYYY-MM" format based on the current date.
- * If the current day is after the 10th, the ID will be for the next month.
- * @returns {string}
+ * Calculates the consumption for household 1 based on the total and household 2 readings.
+ * This function is now designed to work with the new data structure where each
+ * metric is an object containing a 'value' property.
+ *
+ * @param {object} reading - A reading object for a specific period.
+ * @returns {number} The calculated consumption for household 1, or 0 if data is incomplete.
  */
-export const generateReadingId = () => {
-  const now = new Date();
-  let targetDate = now;
+function calculateHousehold1(reading) {
+    // Safely access the 'value' property using optional chaining (?.)
+    const gasTotal = reading.gas_total?.value;
+    const gasHousehold2 = reading.gas_household2?.value;
 
-  // If the current day is after the 10th, use the next month.
-  if (now.getDate() > 10) {
-    targetDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-  }
+    // Only perform the calculation if both values are present and are numbers
+    if (typeof gasTotal === 'number' && typeof gasHousehold2 === 'number') {
+        return gasTotal - gasHousehold2;
+    }
 
-  const year = targetDate.getFullYear();
-  const month = String(targetDate.getMonth() + 1).padStart(2, '0');
-  
-  return `${year}-${month}`;
-};
+    // Return 0 or null if the necessary data isn't available for the calculation
+    return 0;
+}
+
+export { calculateHousehold1 };
