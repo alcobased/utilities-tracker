@@ -23,6 +23,18 @@ router.post('/settings', async (req, res) => {
     }
 });
 
+// --- Get all RAW readings ---
+router.get('/raw-readings', async (req, res) => {
+    try {
+        const rawReadings = await getAllReadings();
+        // Sort with the most recent period first
+        res.json(rawReadings.sort((a, b) => b.id.localeCompare(a.id)));
+    } catch (error) {
+        console.error('Error fetching raw readings:', error);
+        res.status(500).json({ error: 'Failed to retrieve raw readings' });
+    }
+});
+
 // --- Get all calculated CONSUMPTION data ---
 router.get('/readings', async (req, res) => {
     try {

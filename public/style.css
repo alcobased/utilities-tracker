@@ -131,7 +131,7 @@ button:hover {
 }
 
 /* Table styles */
-#readings-table {
+.table-responsive table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
@@ -149,19 +149,19 @@ button:hover {
     margin-top: 20px;
 }
 
-#readings-table th,
-#readings-table td {
+.table-responsive th,
+.table-responsive td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: left;
 }
 
-#readings-table th {
+.table-responsive th {
     background-color: #f2f2f2;
     text-align: center;
 }
 
-#readings-table tbody tr:nth-child(even) {
+.table-responsive tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 

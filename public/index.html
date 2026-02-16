@@ -11,6 +11,7 @@
 <body>
     <nav class="navbar">
         <a href="#" id="nav-add" data-i18n="nav_add">Add Readings</a>
+        <a href="#" id="nav-raw" data-i18n="nav_raw">Raw Readings</a>
         <a href="#" id="nav-view" data-i18n="nav_view">View Consumption</a>
         <a href="#" id="nav-settings" data-i18n="nav_settings">Settings</a>
     </nav>
@@ -97,6 +98,37 @@
 
                 <button type="submit" data-i18n="save_btn">Save All Meter Readings</button>
             </form>
+        </section>
+
+        <!-- Section for Viewing Raw Readings -->
+        <section id="raw-readings-section" class="content-section" style="display: none;">
+            <h2 data-i18n="raw_readings_title">Raw Meter Readings Overview</h2>
+            <p data-i18n="raw_readings_info">This table shows the original meter readings as entered by the user.</p>
+            <div class="table-responsive">
+                <table id="raw-readings-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" data-i18n="period">Period</th>
+                            <th colspan="3" data-i18n="electricity">Electricity (kWh)</th>
+                            <th colspan="2" data-i18n="gas">Gas (m³)</th>
+                            <th colspan="2" data-i18n="water">Water (m³)</th>
+                            <th rowspan="2" data-i18n="actions">Actions</th>
+                        </tr>
+                        <tr>
+                            <th data-i18n="total">Total</th>
+                            <th data-i18n="hh1">HH1</th>
+                            <th data-i18n="hh2">HH2</th>
+                            <th data-i18n="total">Total</th>
+                            <th data-i18n="hh2">HH2</th>
+                            <th data-i18n="total">Total</th>
+                            <th data-i18n="hh2">HH2</th>
+                        </tr>
+                    </thead>
+                    <tbody id="raw-readings-body">
+                        <!-- Raw data will be populated here by script.js -->
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <!-- Section for Viewing Calculated Consumption -->

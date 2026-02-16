@@ -1,14 +1,17 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // Navigation and section elements
     const navAdd = document.getElementById('nav-add');
+    const navRaw = document.getElementById('nav-raw');
     const navView = document.getElementById('nav-view');
     const navSettings = document.getElementById('nav-settings');
     const addSection = document.getElementById('add-reading-section');
+    const rawSection = document.getElementById('raw-readings-section');
     const viewSection = document.getElementById('view-readings-section');
     const settingsSection = document.getElementById('settings-section');
 
     // Form and table elements
     const form = document.getElementById('reading-form');
+    const rawTableBody = document.getElementById('raw-readings-body');
     const consumptionTableBody = document.getElementById('readings-body');
     const yearSelect = document.getElementById('year-select');
     const monthSelect = document.getElementById('month-select');
@@ -140,6 +143,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    const renderRawReadings = (rawReadings) => {
+        rawTableBody.innerHTML = '';
+        if (rawReadings.length === 0) {
+            rawTableBody.innerHTML = `<tr><td colspan="9">${t('no_data')}</td></tr>`;
+            return;
+        }
+
+        const formatVal = (val) => (val === null || val === undefined) ? '-' : val.value.toFixed(2);
+
+        rawReadings.forEach(data => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${data.id}</td>
+                <td>${formatVal(data.electricity_total)}</td>
+                <td>${formatVal(data.electricity_hh1)}</td>
+                <td>${formatVal(data.electricity_hh2)}</td>
+                <td>${formatVal(data.gas_total)}</td>
+                <td>${formatVal(data.gas_hh2)}</td>
+                <td>${formatVal(data.water_total)}</td>
+                <td>${formatVal(data.water_hh2)}</td>
+                <td><button class="delete-btn" data-id="${data.id}">${t('delete_btn')}</button></td>
+            `;
+            rawTableBody.appendChild(tr);
+        });
+    };
+
+    const fetchRawReadings = async () => {
+        try {
+            const response = await fetch('/api/raw-readings');
+            if (!response.ok) throw new Error('Failed to fetch raw readings.');
+            const data = await response.json();
+            renderRawReadings(data);
+        } catch (error) {
+            console.error('Error fetching raw readings:', error);
+            rawTableBody.innerHTML = `<tr><td colspan="9">${t('error_loading')}</td></tr>`;
+        }
+    };
+
     const fetchConsumptionData = async () => {
         try {
             const response = await fetch('/api/readings');
@@ -187,11 +228,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         document.getElementById(viewId).style.display = 'block';
         navAdd.classList.toggle('active', viewId === 'add-reading-section');
+        navRaw.classList.toggle('active', viewId === 'raw-readings-section');
         navView.classList.toggle('active', viewId === 'view-readings-section');
         navSettings.classList.toggle('active', viewId === 'settings-section');
     };
 
     navAdd.addEventListener('click', (e) => { e.preventDefault(); showView('add-reading-section'); });
+    navRaw.addEventListener('click', (e) => { e.preventDefault(); showView('raw-readings-section'); fetchRawReadings(); });
     navView.addEventListener('click', (e) => { e.preventDefault(); showView('view-readings-section'); fetchConsumptionData(); });
     navSettings.addEventListener('click', (e) => { e.preventDefault(); showView('settings-section'); });
 
@@ -243,6 +286,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const response = await fetch(`/api/readings/${periodId}`, { method: 'DELETE' });
                     if (!response.ok) throw new Error('Failed to delete reading.');
                     fetchConsumptionData();
+                } catch (error) {
+                    alert(t('delete_error', { message: error.message }));
+                }
+            }
+        }
+    });
+
+    rawTableBody.addEventListener('click', async (e) => {
+        if (e.target && e.target.classList.contains('delete-btn')) {
+            const periodId = e.target.getAttribute('data-id');
+            if (confirm(t('delete_confirm', { periodId }))) {
+                try {
+                    const response = await fetch(`/api/readings/${periodId}`, { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Failed to delete reading.');
+                    fetchRawReadings();
                 } catch (error) {
                     alert(t('delete_error', { message: error.message }));
                 }
