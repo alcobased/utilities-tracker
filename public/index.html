@@ -1,71 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Utility Consumption SPA</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <nav class="navbar">
-        <a href="#" id="nav-add">Add / Update Meter Reading</a>
-        <a href="#" id="nav-view">View Consumption</a>
+        <a href="#" id="nav-add" data-i18n="nav_add">Add Readings</a>
+        <a href="#" id="nav-view" data-i18n="nav_view">View Consumption</a>
+        <a href="#" id="nav-settings" data-i18n="nav_settings">Settings</a>
     </nav>
 
     <main class="main-content">
-        <h1>Utility Consumption Tracker</h1>
+        <h1 data-i18n="app_title">Utility Consumption Tracker</h1>
 
         <!-- Section for Adding/Updating Raw Meter Readings -->
         <section id="add-reading-section" class="content-section">
-            <h2>Add / Update Meter Readings</h2>
+            <h2><span data-i18n="add_readings_title">Add / Update Meter Readings</span> <span id="update-status"
+                    class="badge"></span></h2>
             <form id="reading-form">
-                <p>Select a date to define the period for the meter reading. This will update the raw reading for that specific period.</p>
-                <div class="form-group">
-                    <label for="date-input">Select Date of Reading</label>
-                    <input type="date" id="date-input" required>
+                <p data-i18n="period_select_info">Select the year and month to define the period for this reading.</p>
+                <div class="info-note">
+                    <strong data-i18n="note_label">Note:</strong> <span data-i18n="reading_note">Readings for a month
+                        (e.g., March) should ideally be taken at the
+                        very end of that month (e.g., March 31st 23:59) or the start of the next month.</span>
+                </div>
+                <div class="period-selectors">
+                    <div class="form-group">
+                        <label for="year-select" data-i18n="year">Year</label>
+                        <select id="year-select" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="month-select" data-i18n="month">Month</label>
+                        <select id="month-select" required>
+                            <option value="01">January</option>
+                            <option value="02">February</option>
+                            <option value="03">March</option>
+                            <option value="04">April</option>
+                            <option value="05">May</option>
+                            <option value="06">June</option>
+                            <option value="07">July</option>
+                            <option value="08">August</option>
+                            <option value="09">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div id="metrics-fields" class="metrics-container">
-                    <div class="form-group">
-                        <label for="gas-total-input">Total Gas Meter Reading</label>
-                        <input type="number" step="0.01" id="gas-total-input" placeholder="e.g., 2500.5">
+                    <div class="category">
+                        <h3 data-i18n="electricity_header">Electricity (kWh)</h3>
+                        <div class="form-group">
+                            <label for="electricity-total-input" data-i18n="total_reading_label">Total Reading</label>
+                            <input type="number" step="0.01" id="electricity-total-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="electricity-hh1-input" data-i18n="hh1_reading_label">Household 1 Reading</label>
+                            <input type="number" step="0.01" id="electricity-hh1-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="electricity-hh2-input" data-i18n="hh2_reading_label">Household 2 Reading</label>
+                            <input type="number" step="0.01" id="electricity-hh2-input">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="gas-hh2-input">Household 2 Gas Meter Reading</label>
-                        <input type="number" step="0.01" id="gas-hh2-input" placeholder="e.g., 800.2">
+
+                    <div class="category">
+                        <h3 data-i18n="gas_header">Gas (m³)</h3>
+                        <div class="form-group">
+                            <label for="gas-total-input" data-i18n="total_reading_label">Total Reading</label>
+                            <input type="number" step="0.01" id="gas-total-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="gas-hh2-input" data-i18n="hh2_reading_label">Household 2 Reading</label>
+                            <input type="number" step="0.01" id="gas-hh2-input">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="electricity-total-input">Total Electricity Meter Reading</label>
-                        <input type="number" step="0.01" id="electricity-total-input" placeholder="e.g., 10123.4">
+
+                    <div class="category">
+                        <h3 data-i18n="water_header">Water (m³)</h3>
+                        <div class="form-group">
+                            <label for="water-total-input" data-i18n="total_reading_label">Total Reading</label>
+                            <input type="number" step="0.01" id="water-total-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="water-hh2-input" data-i18n="hh2_reading_label">Household 2 Reading</label>
+                            <input type="number" step="0.01" id="water-hh2-input">
+                        </div>
                     </div>
                 </div>
 
-                <button type="submit">Save Meter Reading</button>
+                <button type="submit" data-i18n="save_btn">Save All Meter Readings</button>
             </form>
         </section>
 
         <!-- Section for Viewing Calculated Consumption -->
         <section id="view-readings-section" class="content-section" style="display: none;">
-            <h2>Calculated Monthly Consumption</h2>
-            <p>This table shows the calculated energy consumption for each period. Consumption is the difference between the meter readings of two consecutive periods.</p>
-            <table id="readings-table">
-                <thead>
-                    <tr>
-                        <th>Period</th>
-                        <th>Gas Consumption (Total)</th>
-                        <th>Gas Consumption (HH2)</th>
-                        <th>Gas Consumption (HH1)</th>
-                        <th>Electricity Consumption</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="readings-body">
-                    <!-- Consumption data will be populated here by script.js -->
-                </tbody>
-            </table>
+            <h2 data-i18n="view_consumption_title">Calculated Monthly Consumption</h2>
+            <p data-i18n="consumption_table_info">This table shows the calculated energy consumption for each period.
+                Consumption is the difference between
+                the meter readings of two consecutive periods.</p>
+            <div class="table-responsive">
+                <table id="readings-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" data-i18n="period">Period</th>
+                            <th colspan="4" data-i18n="electricity">Electricity (kWh)</th>
+                            <th colspan="3" data-i18n="gas">Gas (m³)</th>
+                            <th colspan="3" data-i18n="water">Water (m³)</th>
+                            <th rowspan="2" data-i18n="actions">Actions</th>
+                        </tr>
+                        <tr>
+                            <th data-i18n="total">Total</th>
+                            <th data-i18n="hh1">HH1</th>
+                            <th data-i18n="hh2">HH2</th>
+                            <th data-i18n="common">Common</th>
+                            <th data-i18n="total">Total</th>
+                            <th data-i18n="hh1">HH1</th>
+                            <th data-i18n="hh2">HH2</th>
+                            <th data-i18n="total">Total</th>
+                            <th data-i18n="hh1">HH1</th>
+                            <th data-i18n="hh2">HH2</th>
+                        </tr>
+                    </thead>
+                    <tbody id="readings-body">
+                        <!-- Consumption data will be populated here by script.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section for Settings -->
+        <section id="settings-section" class="content-section" style="display: none;">
+            <h2 data-i18n="settings_title">Settings</h2>
+            <div class="form-group">
+                <label for="language-select" data-i18n="language">Language</label>
+                <select id="language-select">
+                    <option value="en">English</option>
+                    <option value="lt">Lietuvių</option>
+                </select>
+            </div>
+            <button id="save-settings-btn" data-i18n="save_settings_btn">Save Settings</button>
         </section>
     </main>
 
+    <script src="i18n.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

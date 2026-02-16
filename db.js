@@ -31,10 +31,16 @@ async function upsertReading(periodId, metrics) {
     // Iterate over the metrics provided by the user and update them
     for (const key in metrics) {
         if (Object.prototype.hasOwnProperty.call(metrics, key)) {
-            db.data.readings[periodId][key] = {
-                value: metrics[key],
-                updatedAt: now,
-            };
+            const newValue = metrics[key];
+            const existing = db.data.readings[periodId][key];
+
+            // Only update if the value is new or has changed
+            if (!existing || existing.value !== newValue) {
+                db.data.readings[periodId][key] = {
+                    value: newValue,
+                    updatedAt: now,
+                };
+            }
         }
     }
 
@@ -78,10 +84,31 @@ async function deleteReading(periodId) {
     }
 }
 
+/**
+ * Retrieves application settings.
+ */
+async function getSettings() {
+    await db.read();
+    return db.data.settings || {};
+}
+
+/**
+ * Updates application settings.
+ * @param {object} newSettings - Object containing settings to update.
+ */
+async function updateSettings(newSettings) {
+    await db.read();
+    db.data.settings = { ...(db.data.settings || {}), ...newSettings };
+    await db.write();
+    return db.data.settings;
+}
+
 export {
     initDatabase,
     upsertReading,
     getAllReadings,
     getReading,
     deleteReading,
+    getSettings,
+    updateSettings,
 };

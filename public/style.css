@@ -13,7 +13,8 @@ body {
     margin: 20px auto;
 }
 
-h1, h2 {
+h1,
+h2 {
     color: #444;
 }
 
@@ -35,7 +36,8 @@ h1, h2 {
     transition: background-color 0.3s;
 }
 
-.navbar a:hover, .navbar a.active {
+.navbar a:hover,
+.navbar a.active {
     background-color: #555;
 }
 
@@ -44,8 +46,33 @@ h1, h2 {
     background: #fff;
     padding: 25px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
+}
+
+.info-note {
+    background-color: #e7f3ff;
+    border-left: 4px solid #007BFF;
+    padding: 12px;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    border-radius: 4px;
+    color: #444;
+}
+
+.badge {
+    font-size: 0.6em;
+    padding: 2px 8px;
+    border-radius: 10px;
+    vertical-align: middle;
+    margin-left: 10px;
+    display: none;
+}
+
+.badge.update {
+    display: inline-block;
+    background-color: #ffc107;
+    color: #000;
 }
 
 /* Form styles */
@@ -71,11 +98,20 @@ h1, h2 {
     gap: 15px;
 }
 
-input[type="date"], input[type="number"] {
+.period-selectors {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+input[type="date"],
+input[type="number"],
+select {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
+    background-color: white;
 }
 
 button {
@@ -101,7 +137,20 @@ button:hover {
     margin-top: 20px;
 }
 
-#readings-table th, #readings-table td {
+.category h3 {
+    border-bottom: 2px solid #007BFF;
+    padding-bottom: 5px;
+    margin-top: 5px;
+    color: #007BFF;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+#readings-table th,
+#readings-table td {
     border: 1px solid #ddd;
     padding: 12px;
     text-align: left;
@@ -109,6 +158,7 @@ button:hover {
 
 #readings-table th {
     background-color: #f2f2f2;
+    text-align: center;
 }
 
 #readings-table tbody tr:nth-child(even) {

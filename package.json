@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "seed": "node seed.js",
+    "seed:incomplete": "node seed.js --incomplete"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "jest": "^30.2.0",
+    "memfs": "^4.56.10",
     "nodemon": "^3.0.1",
     "supertest": "^7.2.2"
   }

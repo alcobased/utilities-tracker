@@ -1,8 +1,27 @@
 import express from 'express';
-import { getAllReadings, upsertReading, deleteReading } from './db.js';
+import { getAllReadings, upsertReading, deleteReading, getReading, getSettings, updateSettings } from './db.js';
 import { calculateConsumption } from './utils.js';
 
 const router = express.Router();
+
+// --- Settings Routes ---
+router.get('/settings', async (req, res) => {
+    try {
+        const settings = await getSettings();
+        res.json(settings);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch settings' });
+    }
+});
+
+router.post('/settings', async (req, res) => {
+    try {
+        const settings = await updateSettings(req.body);
+        res.json(settings);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update settings' });
+    }
+});
 
 // --- Get all calculated CONSUMPTION data ---
 router.get('/readings', async (req, res) => {
@@ -44,8 +63,23 @@ router.get('/readings', async (req, res) => {
     }
 });
 
+// --- Get raw readings for a specific period ---
+router.get('/readings/:periodId(*)', async (req, res) => {
+    try {
+        const { periodId } = req.params;
+        const reading = await getReading(periodId);
+        if (!reading) {
+            return res.status(404).json({ error: 'Reading not found' });
+        }
+        res.json(reading);
+    } catch (error) {
+        console.error(`Error fetching reading for period ${req.params.periodId}:`, error);
+        res.status(500).json({ error: 'Failed to retrieve reading data' });
+    }
+});
+
 // --- Upsert a reading for a specific period ---
-router.post('/readings/:periodId', async (req, res) => {
+router.post('/readings/:periodId(*)', async (req, res) => {
     try {
         const { periodId } = req.params;
         const metrics = req.body;
@@ -63,7 +97,7 @@ router.post('/readings/:periodId', async (req, res) => {
 });
 
 // --- Delete all readings for a specific period ---
-router.delete('/readings/:periodId', async (req, res) => {
+router.delete('/readings/:periodId(*)', async (req, res) => {
     try {
         const { periodId } = req.params;
         if (!periodId) {
