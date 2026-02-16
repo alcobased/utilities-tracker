@@ -124,22 +124,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const formatVal = (val) => (val === null || val === undefined) ? '-' : val.toFixed(2);
+        const formatVal = (val) => (val === null || val === undefined) ? '-' : Math.round(val).toString();
 
         consumptionData.forEach(data => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${data.period}</td>
-                <td>${formatVal(data.electricity_total)}</td>
-                <td>${formatVal(data.electricity_hh1)}</td>
-                <td>${formatVal(data.electricity_hh2)}</td>
-                <td>${formatVal(data.electricity_common)}</td>
-                <td>${formatVal(data.gas_total)}</td>
-                <td>${formatVal(data.gas_hh1)}</td>
-                <td>${formatVal(data.gas_hh2)}</td>
-                <td>${formatVal(data.water_total)}</td>
-                <td>${formatVal(data.water_hh1)}</td>
-                <td>${formatVal(data.water_hh2)}</td>
+                <td class="sticky-column">${data.period}</td>
+                <td class="theme-electricity">${formatVal(data.electricity_total)}</td>
+                <td class="theme-electricity">${formatVal(data.electricity_hh1)}</td>
+                <td class="theme-electricity">${formatVal(data.electricity_hh2)}</td>
+                <td class="theme-electricity">${formatVal(data.electricity_common)}</td>
+                <td class="theme-gas">${formatVal(data.gas_total)}</td>
+                <td class="theme-gas">${formatVal(data.gas_hh1)}</td>
+                <td class="theme-gas">${formatVal(data.gas_hh2)}</td>
+                <td class="theme-water">${formatVal(data.water_total)}</td>
+                <td class="theme-water">${formatVal(data.water_child || data.water_hh1)}</td>
+                <td class="theme-water">${formatVal(data.water_hh2)}</td>
                 <td><button class="delete-btn" data-id="${data.period}">${t('delete_btn')}</button></td>
             `;
             consumptionTableBody.appendChild(tr);
@@ -163,13 +163,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const grandTotal = totalHH1 + totalHH2;
 
             tr.innerHTML = `
-                <td>${data.period}</td>
-                <td>${formatVal(data.electricity_cost_hh1)}</td>
-                <td>${formatVal(data.electricity_cost_hh2)}</td>
-                <td>${formatVal(data.gas_cost_hh1)}</td>
-                <td>${formatVal(data.gas_cost_hh2)}</td>
-                <td>${formatVal(data.water_cost_hh1)}</td>
-                <td>${formatVal(data.water_cost_hh2)}</td>
+                <td class="sticky-column">${data.period}</td>
+                <td class="theme-electricity">${formatVal(data.electricity_cost_hh1)}</td>
+                <td class="theme-electricity">${formatVal(data.electricity_cost_hh2)}</td>
+                <td class="theme-gas">${formatVal(data.gas_cost_hh1)}</td>
+                <td class="theme-gas">${formatVal(data.gas_cost_hh2)}</td>
+                <td class="theme-water">${formatVal(data.water_cost_hh1)}</td>
+                <td class="theme-water">${formatVal(data.water_cost_hh2)}</td>
                 <td class="hh-total"><strong>${formatVal(totalHH1)}</strong></td>
                 <td class="hh-total"><strong>${formatVal(totalHH2)}</strong></td>
                 <td class="grand-total"><strong>${formatVal(grandTotal)}</strong></td>
@@ -185,19 +185,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        const formatVal = (val) => (val === null || val === undefined) ? '-' : val.value.toFixed(2);
 
         rawReadings.forEach(data => {
             const tr = document.createElement('tr');
+            const formatReading = (val) => (val === null || val === undefined) ? '-' : Math.round(val.value).toString();
+            const formatBill = (val) => (val === null || val === undefined) ? '-' : val.value.toFixed(2);
+
             tr.innerHTML = `
-                <td>${data.id}</td>
-                <td>${formatVal(data.electricity_total)}</td>
-                <td>${formatVal(data.electricity_hh1)}</td>
-                <td>${formatVal(data.electricity_hh2)}</td>
-                <td>${formatVal(data.gas_total)}</td>
-                <td>${formatVal(data.gas_hh2)}</td>
-                <td>${formatVal(data.water_total)}</td>
-                <td>${formatVal(data.water_hh2)}</td>
+                <td class="sticky-column">${data.id}</td>
+                <td class="theme-electricity">${formatReading(data.electricity_total)}</td>
+                <td class="theme-electricity">${formatReading(data.electricity_hh1)}</td>
+                <td class="theme-electricity">${formatReading(data.electricity_hh2)}</td>
+                <td class="theme-electricity">${formatBill(data.electricity_bill)}</td>
+                <td class="theme-gas">${formatReading(data.gas_total)}</td>
+                <td class="theme-gas">${formatReading(data.gas_hh2)}</td>
+                <td class="theme-gas">${formatBill(data.gas_bill)}</td>
+                <td class="theme-water">${formatReading(data.water_total)}</td>
+                <td class="theme-water">${formatReading(data.water_hh2)}</td>
+                <td class="theme-water">${formatBill(data.water_bill)}</td>
                 <td><button class="delete-btn" data-id="${data.id}">${t('delete_btn')}</button></td>
             `;
             rawTableBody.appendChild(tr);
@@ -256,8 +261,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         yearSelect.appendChild(option);
     }
     monthSelect.value = currentMonth;
+    checkExistingReading();
 
     // --- Event Listeners ---
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+        });
+    }
 
     const showView = (viewId) => {
         document.querySelectorAll('.content-section').forEach(section => {
@@ -269,6 +283,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         navView.classList.toggle('active', viewId === 'view-readings-section');
         navSplits.classList.toggle('active', viewId === 'bill-splits-section');
         navSettings.classList.toggle('active', viewId === 'settings-section');
+
+        // Close mobile menu after clicking a link
+        if (navLinks) navLinks.classList.remove('show');
     };
 
     navAdd.addEventListener('click', (e) => { e.preventDefault(); showView('add-reading-section'); });

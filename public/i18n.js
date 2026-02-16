@@ -45,6 +45,7 @@ const translations = {
         household_totals: 'HH Totals (€)',
         grand_total: 'Grand Total (€)',
         raw_readings_title: 'Meter Readings Overview',
+        raw_readings_info: 'This table shows the original meter readings as entered by the user.',
         note_label: 'Note',
         reading_note: 'Readings for a month (e.g., March) should ideally be taken at the very end of that month (e.g., March 31st 23:59) or the start of the next month.',
         electricity_header: 'Electricity (kWh)',
@@ -54,7 +55,9 @@ const translations = {
         hh1_reading_label: 'Household 1 Reading',
         hh2_reading_label: 'Household 2 Reading',
         bill_amount_label: 'Bill Amount (€)',
-        cost: 'Cost'
+        cost: 'Cost',
+        hh1_na_label: 'Household 1 (Not measured)',
+        bill: 'Bill'
     },
     lt: {
         nav_add: 'Pridėti rodmenis',
@@ -102,6 +105,7 @@ const translations = {
         household_totals: 'N. ūkių sumos (€)',
         grand_total: 'Bendra suma (€)',
         raw_readings_title: 'Skaitiklių rodmenų apžvalga',
+        raw_readings_info: 'Šioje lentelėje rodomi originalūs vartotojo įvesti skaitiklių rodmenys.',
         note_label: 'Pastaba',
         reading_note: 'Mėnesio (pvz., kovo) rodmenys idealiausiu atveju turėtų būti nurašomi pačioje to mėnesio pabaigoje (pvz., kovo 31 d. 23:59) arba kito mėnesio pradžioje.',
         electricity_header: 'Elektra (kWh)',
@@ -111,7 +115,9 @@ const translations = {
         hh1_reading_label: '1-o namų ūkio rodmuo',
         hh2_reading_label: '2-o namų ūkio rodmuo',
         bill_amount_label: 'Sąskaitos suma (€)',
-        cost: 'Kaina'
+        cost: 'Kaina',
+        hh1_na_label: '1-as namų ūkis (nematuojama)',
+        bill: 'Sąskaita'
     }
 };
 
