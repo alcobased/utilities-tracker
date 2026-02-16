@@ -3,45 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Utility Readings</title>
+    <title>Utility Consumption SPA</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Utility Readings</h1>
+    <nav class="navbar">
+        <a href="#" id="nav-add">Add / Update Meter Reading</a>
+        <a href="#" id="nav-view">View Consumption</a>
+    </nav>
 
-    <div class="container">
-        <h2>Add / Update Readings</h2>
-        <form id="reading-form">
-            <p>Select a date to define the consumption period.</p>
-            <input type="date" id="date-input" required>
-            
-            <div id="metrics-fields" class="metrics-container">
-                <input type="number" step="0.01" id="gas-total-input" placeholder="Total Gas Reading">
-                <input type="number" step="0.01" id="gas-hh2-input" placeholder="Household 2 Gas">
-                <input type="number" step="0.01" id="electricity-total-input" placeholder="Total Electricity">
-                <!-- Add other metric inputs here as needed -->
-            </div>
+    <main class="main-content">
+        <h1>Utility Consumption Tracker</h1>
 
-            <button type="submit">Save Readings</button>
-        </form>
+        <!-- Section for Adding/Updating Raw Meter Readings -->
+        <section id="add-reading-section" class="content-section">
+            <h2>Add / Update Meter Readings</h2>
+            <form id="reading-form">
+                <p>Select a date to define the period for the meter reading. This will update the raw reading for that specific period.</p>
+                <div class="form-group">
+                    <label for="date-input">Select Date of Reading</label>
+                    <input type="date" id="date-input" required>
+                </div>
 
-        <h2>Recorded Readings</h2>
-        <table id="readings-table">
-            <thead>
-                <tr>
-                    <th>Period</th>
-                    <th>Gas (Total)</th>
-                    <th>Gas (HH2)</th>
-                    <th>Gas (HH1, Calc.)</th>
-                    <th>Electricity</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="readings-body">
-                <!-- Data will be populated here -->
-            </tbody>
-        </table>
-    </div>
+                <div id="metrics-fields" class="metrics-container">
+                    <div class="form-group">
+                        <label for="gas-total-input">Total Gas Meter Reading</label>
+                        <input type="number" step="0.01" id="gas-total-input" placeholder="e.g., 2500.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="gas-hh2-input">Household 2 Gas Meter Reading</label>
+                        <input type="number" step="0.01" id="gas-hh2-input" placeholder="e.g., 800.2">
+                    </div>
+                    <div class="form-group">
+                        <label for="electricity-total-input">Total Electricity Meter Reading</label>
+                        <input type="number" step="0.01" id="electricity-total-input" placeholder="e.g., 10123.4">
+                    </div>
+                </div>
+
+                <button type="submit">Save Meter Reading</button>
+            </form>
+        </section>
+
+        <!-- Section for Viewing Calculated Consumption -->
+        <section id="view-readings-section" class="content-section" style="display: none;">
+            <h2>Calculated Monthly Consumption</h2>
+            <p>This table shows the calculated energy consumption for each period. Consumption is the difference between the meter readings of two consecutive periods.</p>
+            <table id="readings-table">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Gas Consumption (Total)</th>
+                        <th>Gas Consumption (HH2)</th>
+                        <th>Gas Consumption (HH1)</th>
+                        <th>Electricity Consumption</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="readings-body">
+                    <!-- Consumption data will be populated here by script.js -->
+                </tbody>
+            </table>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
