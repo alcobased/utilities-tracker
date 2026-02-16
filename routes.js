@@ -45,30 +45,20 @@ router.get('/readings', async (req, res) => {
         }
 
         // Sort readings by period ID to ensure correct chronological order for consumption calculation
-        rawReadings.sort((a, b) => a.id.localeCompare(b.id));
+        const sortedReadings = rawReadings.sort((a, b) => a.id.localeCompare(b.id));
 
         const consumptionData = [];
-        for (let i = 0; i < rawReadings.length; i++) {
-            const currentReading = rawReadings[i];
-            // Previous reading is null for the very first entry
-            const previousReading = i > 0 ? rawReadings[i - 1] : null;
-
-            const consumption = calculateConsumption(currentReading, previousReading);
-
+        sortedReadings.forEach((reading, index) => {
+            const previousReading = index > 0 ? sortedReadings[index - 1] : null;
+            const previousCons = index > 0 ? consumptionData[index - 1] : null;
             consumptionData.push({
-                period: currentReading.id, // The period for which consumption is calculated
-                ...consumption,
+                period: reading.id,
+                ...calculateConsumption(reading, previousReading, previousCons)
             });
-        }
-
-        // The first period's consumption is always zero, so we can optionally remove it
-        if (consumptionData.length > 0) {
-            consumptionData.shift(); // Remove the first element
-        }
+        });
 
         // Return the calculated consumption data, sorted with the most recent period first
         res.json(consumptionData.sort((a, b) => b.period.localeCompare(a.period)));
-
     } catch (error) {
         console.error('Error fetching and calculating consumption data:', error);
         res.status(500).json({ error: 'Failed to retrieve or process reading data' });

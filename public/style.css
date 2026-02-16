@@ -144,6 +144,20 @@ button:hover {
     color: #007BFF;
 }
 
+.bill-field {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #ccc;
+}
+
+.bill-field label {
+    color: #28a745;
+}
+
+.bill-field input {
+    border-color: #28a745;
+}
+
 .table-responsive {
     overflow-x: auto;
     margin-top: 20px;

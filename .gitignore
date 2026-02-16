@@ -15,3 +15,7 @@ yarn-error.log*
 # Build output
 dist
 build
+
+# Misc
+db.backup.json
+test_output.txt

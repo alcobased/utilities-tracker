@@ -11,8 +11,9 @@
 <body>
     <nav class="navbar">
         <a href="#" id="nav-add" data-i18n="nav_add">Add Readings</a>
-        <a href="#" id="nav-raw" data-i18n="nav_raw">Raw Readings</a>
+        <a href="#" id="nav-raw" data-i18n="nav_raw">Readings Overview</a>
         <a href="#" id="nav-view" data-i18n="nav_view">View Consumption</a>
+        <a href="#" id="nav-splits" data-i18n="nav_splits">Bill Splits</a>
         <a href="#" id="nav-settings" data-i18n="nav_settings">Settings</a>
     </nav>
 
@@ -69,6 +70,10 @@
                             <label for="electricity-hh2-input" data-i18n="hh2_reading_label">Household 2 Reading</label>
                             <input type="number" step="0.01" id="electricity-hh2-input">
                         </div>
+                        <div class="form-group bill-field">
+                            <label for="electricity-bill-input" data-i18n="bill_amount_label">Bill Amount (€)</label>
+                            <input type="number" step="0.01" id="electricity-bill-input">
+                        </div>
                     </div>
 
                     <div class="category">
@@ -81,6 +86,10 @@
                             <label for="gas-hh2-input" data-i18n="hh2_reading_label">Household 2 Reading</label>
                             <input type="number" step="0.01" id="gas-hh2-input">
                         </div>
+                        <div class="form-group bill-field">
+                            <label for="gas-bill-input" data-i18n="bill_amount_label">Bill Amount (€)</label>
+                            <input type="number" step="0.01" id="gas-bill-input">
+                        </div>
                     </div>
 
                     <div class="category">
@@ -92,6 +101,10 @@
                         <div class="form-group">
                             <label for="water-hh2-input" data-i18n="hh2_reading_label">Household 2 Reading</label>
                             <input type="number" step="0.01" id="water-hh2-input">
+                        </div>
+                        <div class="form-group bill-field">
+                            <label for="water-bill-input" data-i18n="bill_amount_label">Bill Amount (€)</label>
+                            <input type="number" step="0.01" id="water-bill-input">
                         </div>
                     </div>
                 </div>
@@ -162,6 +175,40 @@
                     </thead>
                     <tbody id="readings-body">
                         <!-- Consumption data will be populated here by script.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section for Viewing Bill Splits -->
+        <section id="bill-splits-section" class="content-section" style="display: none;">
+            <h2 data-i18n="bill_splits_title">Monthly Bill Splits</h2>
+            <p data-i18n="bill_splits_info">This table shows how the utility bills are split between households based on
+                their consumption share.</p>
+            <div class="table-responsive">
+                <table id="bill-splits-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" data-i18n="period">Period</th>
+                            <th colspan="2" data-i18n="electricity">Electricity (€)</th>
+                            <th colspan="2" data-i18n="gas">Gas (€)</th>
+                            <th colspan="2" data-i18n="water">Water (€)</th>
+                            <th colspan="2" data-i18n="household_totals">HH Totals (€)</th>
+                            <th rowspan="2" data-i18n="grand_total">Grand Total (€)</th>
+                        </tr>
+                        <tr>
+                            <th data-i18n="hh1">HH1</th>
+                            <th data-i18n="hh2">HH2</th>
+                            <th data-i18n="hh1">HH1</th>
+                            <th data-i18n="hh2">HH2</th>
+                            <th data-i18n="hh1">HH1</th>
+                            <th data-i18n="hh2">HH2</th>
+                            <th data-i18n="hh1">HH1</th>
+                            <th data-i18n="hh2">HH2</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bill-splits-body">
+                        <!-- Bill split data will be populated here by script.js -->
                     </tbody>
                 </table>
             </div>

@@ -147,13 +147,13 @@ describe('Utils', () => {
             gas_total: { value: 100 },
             gas_hh2: { value: 30 }
         };
-        const result = calculateConsumption(current, null);
+        const result = calculateConsumption(current, null, null);
         expect(result.gas_total).toBeNull();
         expect(result.gas_hh1).toBeNull();
     });
 
     test('calculateConsumption should return null metrics when no current reading', () => {
-        const result = calculateConsumption(null, null);
+        const result = calculateConsumption(null, null, null);
         expect(result.gas_total).toBeNull();
         expect(result.electricity_total).toBeNull();
     });
@@ -169,7 +169,7 @@ describe('Utils', () => {
             electricity_total: { value: 100 }, electricity_hh1: { value: 60 }, electricity_hh2: { value: 40 },
             water_total: { value: 30 }, water_hh2: { value: 8 }
         };
-        const result = calculateConsumption(current, previous);
+        const result = calculateConsumption(current, previous, null);
         expect(result.gas_total).toBe(10);
         expect(result.gas_hh2).toBe(5);
         expect(result.gas_hh1).toBe(5);

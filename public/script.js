@@ -3,16 +3,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const navAdd = document.getElementById('nav-add');
     const navRaw = document.getElementById('nav-raw');
     const navView = document.getElementById('nav-view');
+    const navSplits = document.getElementById('nav-splits');
     const navSettings = document.getElementById('nav-settings');
     const addSection = document.getElementById('add-reading-section');
     const rawSection = document.getElementById('raw-readings-section');
     const viewSection = document.getElementById('view-readings-section');
+    const splitsSection = document.getElementById('bill-splits-section');
     const settingsSection = document.getElementById('settings-section');
 
     // Form and table elements
     const form = document.getElementById('reading-form');
     const rawTableBody = document.getElementById('raw-readings-body');
     const consumptionTableBody = document.getElementById('readings-body');
+    const billSplitsBody = document.getElementById('bill-splits-body');
     const yearSelect = document.getElementById('year-select');
     const monthSelect = document.getElementById('month-select');
     const updateStatus = document.getElementById('update-status');
@@ -65,9 +68,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const updateFormWithReading = (reading) => {
         const fields = [
-            'electricity-total-input', 'electricity-hh1-input', 'electricity-hh2-input',
-            'gas-total-input', 'gas-hh2-input',
-            'water-total-input', 'water-hh2-input'
+            'electricity-total-input', 'electricity-hh1-input', 'electricity-hh2-input', 'electricity-bill-input',
+            'gas-total-input', 'gas-hh2-input', 'gas-bill-input',
+            'water-total-input', 'water-hh2-input', 'water-bill-input'
         ];
 
         fields.forEach(fieldId => {
@@ -83,9 +86,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const clearMetricFields = () => {
         const fields = [
-            'electricity-total-input', 'electricity-hh1-input', 'electricity-hh2-input',
-            'gas-total-input', 'gas-hh2-input',
-            'water-total-input', 'water-hh2-input'
+            'electricity-total-input', 'electricity-hh1-input', 'electricity-hh2-input', 'electricity-bill-input',
+            'gas-total-input', 'gas-hh2-input', 'gas-bill-input',
+            'water-total-input', 'water-hh2-input', 'water-bill-input'
         ];
         fields.forEach(fieldId => {
             const el = document.getElementById(fieldId);
@@ -143,6 +146,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     };
 
+    const renderBillSplits = (consumptionData) => {
+        billSplitsBody.innerHTML = '';
+        if (consumptionData.length === 0) {
+            billSplitsBody.innerHTML = `<tr><td colspan="10">${t('no_data')}</td></tr>`;
+            return;
+        }
+
+        const formatVal = (val) => (val === null || val === undefined) ? '-' : val.toFixed(2);
+
+        consumptionData.forEach(data => {
+            const tr = document.createElement('tr');
+
+            const totalHH1 = (data.electricity_cost_hh1 || 0) + (data.gas_cost_hh1 || 0) + (data.water_cost_hh1 || 0);
+            const totalHH2 = (data.electricity_cost_hh2 || 0) + (data.gas_cost_hh2 || 0) + (data.water_cost_hh2 || 0);
+            const grandTotal = totalHH1 + totalHH2;
+
+            tr.innerHTML = `
+                <td>${data.period}</td>
+                <td>${formatVal(data.electricity_cost_hh1)}</td>
+                <td>${formatVal(data.electricity_cost_hh2)}</td>
+                <td>${formatVal(data.gas_cost_hh1)}</td>
+                <td>${formatVal(data.gas_cost_hh2)}</td>
+                <td>${formatVal(data.water_cost_hh1)}</td>
+                <td>${formatVal(data.water_cost_hh2)}</td>
+                <td class="hh-total"><strong>${formatVal(totalHH1)}</strong></td>
+                <td class="hh-total"><strong>${formatVal(totalHH2)}</strong></td>
+                <td class="grand-total"><strong>${formatVal(grandTotal)}</strong></td>
+            `;
+            billSplitsBody.appendChild(tr);
+        });
+    };
+
     const renderRawReadings = (rawReadings) => {
         rawTableBody.innerHTML = '';
         if (rawReadings.length === 0) {
@@ -187,9 +222,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!response.ok) throw new Error('Failed to fetch consumption data.');
             const data = await response.json();
             renderConsumption(data);
+            renderBillSplits(data);
         } catch (error) {
             console.error('Error fetching consumption data:', error);
             consumptionTableBody.innerHTML = `<tr><td colspan="12">${t('error_loading')}</td></tr>`;
+            billSplitsBody.innerHTML = `<tr><td colspan="8">${t('error_loading')}</td></tr>`;
         }
     };
 
@@ -230,12 +267,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         navAdd.classList.toggle('active', viewId === 'add-reading-section');
         navRaw.classList.toggle('active', viewId === 'raw-readings-section');
         navView.classList.toggle('active', viewId === 'view-readings-section');
+        navSplits.classList.toggle('active', viewId === 'bill-splits-section');
         navSettings.classList.toggle('active', viewId === 'settings-section');
     };
 
     navAdd.addEventListener('click', (e) => { e.preventDefault(); showView('add-reading-section'); });
     navRaw.addEventListener('click', (e) => { e.preventDefault(); showView('raw-readings-section'); fetchRawReadings(); });
     navView.addEventListener('click', (e) => { e.preventDefault(); showView('view-readings-section'); fetchConsumptionData(); });
+    navSplits.addEventListener('click', (e) => { e.preventDefault(); showView('bill-splits-section'); fetchConsumptionData(); });
     navSettings.addEventListener('click', (e) => { e.preventDefault(); showView('settings-section'); });
 
     yearSelect.addEventListener('change', checkExistingReading);
@@ -254,10 +293,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         addMetric('electricity-total-input', 'electricity_total');
         addMetric('electricity-hh1-input', 'electricity_hh1');
         addMetric('electricity-hh2-input', 'electricity_hh2');
+        addMetric('electricity-bill-input', 'electricity_bill');
         addMetric('gas-total-input', 'gas_total');
         addMetric('gas-hh2-input', 'gas_hh2');
+        addMetric('gas-bill-input', 'gas_bill');
         addMetric('water-total-input', 'water_total');
         addMetric('water-hh2-input', 'water_hh2');
+        addMetric('water-bill-input', 'water_bill');
 
         if (Object.keys(metrics).length === 0) {
             alert(t('enter_at_least_one'));

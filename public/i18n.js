@@ -39,8 +39,12 @@ const translations = {
         common: 'Common',
         delete_btn: 'Delete',
         nav_raw: 'Readings Overview',
+        nav_splits: 'Bill Splits',
+        bill_splits_title: 'Monthly Bill Splits',
+        bill_splits_info: 'This table shows the bill splits. Note: While all bills for a month are shown in the same row, Electricity and Water splits are calculated using the previous period\'s consumption, while Gas splits use the current period\'s consumption.',
+        household_totals: 'HH Totals (€)',
+        grand_total: 'Grand Total (€)',
         raw_readings_title: 'Meter Readings Overview',
-        raw_readings_info: 'This table shows the original meter readings as entered by the user.',
         note_label: 'Note',
         reading_note: 'Readings for a month (e.g., March) should ideally be taken at the very end of that month (e.g., March 31st 23:59) or the start of the next month.',
         electricity_header: 'Electricity (kWh)',
@@ -48,7 +52,9 @@ const translations = {
         water_header: 'Water (m³)',
         total_reading_label: 'Total Reading',
         hh1_reading_label: 'Household 1 Reading',
-        hh2_reading_label: 'Household 2 Reading'
+        hh2_reading_label: 'Household 2 Reading',
+        bill_amount_label: 'Bill Amount (€)',
+        cost: 'Cost'
     },
     lt: {
         nav_add: 'Pridėti rodmenis',
@@ -85,21 +91,27 @@ const translations = {
         gas: 'Dujos',
         water: 'Vanduo',
         total: 'Iš viso',
-        hh1: 'B1',
-        hh2: 'B2',
+        hh1: '1 NŪ',
+        hh2: '2 NŪ',
         common: 'Bendra',
         delete_btn: 'Ištrinti',
         nav_raw: 'Rodmenų apžvalga',
+        nav_splits: 'Sąskaitų padalinimas',
+        bill_splits_title: 'Mėnesio sąskaitų padalinimas',
+        bill_splits_info: 'Šioje lentelėje rodomas sąskaitų padalinimas. Pastaba: nors visos mėnesio sąskaitos rodomos toje pačioje eilutėje, elektros ir vandens padalinimai skaičiuojami pagal ankstesnio laikotarpio suvartojimą, o dujų – pagal einamojo laikotarpio suvartojimą.',
+        household_totals: 'N. ūkių sumos (€)',
+        grand_total: 'Bendra suma (€)',
         raw_readings_title: 'Skaitiklių rodmenų apžvalga',
-        raw_readings_info: 'Šioje lentelėje rodomi originalūs skaitiklių rodmenys, kuriuos įvedė vartotojas.',
         note_label: 'Pastaba',
         reading_note: 'Mėnesio (pvz., kovo) rodmenys idealiausiu atveju turėtų būti nurašomi pačioje to mėnesio pabaigoje (pvz., kovo 31 d. 23:59) arba kito mėnesio pradžioje.',
         electricity_header: 'Elektra (kWh)',
         gas_header: 'Dujos (m³)',
         water_header: 'Vanduo (m³)',
         total_reading_label: 'Bendras rodmuo',
-        hh1_reading_label: '1-o buto rodmuo',
-        hh2_reading_label: '2-o buto rodmuo'
+        hh1_reading_label: '1-o namų ūkio rodmuo',
+        hh2_reading_label: '2-o namų ūkio rodmuo',
+        bill_amount_label: 'Sąskaitos suma (€)',
+        cost: 'Kaina'
     }
 };
 
