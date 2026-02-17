@@ -63,7 +63,7 @@ const translations = {
         nav_add: 'Pridėti rodmenis',
         nav_view: 'Peržiūrėti suvartojimą',
         nav_settings: 'Nustatymai',
-        app_title: 'Komunalinių paslaugų apskata',
+        app_title: 'Komunalinių paslaugų apskaita',
         add_readings_title: 'Pridėti / Atnaujinti skaitiklių rodmenis',
         period_select_info: 'Pasirinkite metus ir mėnesį, kad nustatytumėte šio rodmens laikotarpį.',
         year: 'Metai',
