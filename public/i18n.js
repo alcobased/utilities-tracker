@@ -3,7 +3,7 @@ const translations = {
         nav_add: 'Add Readings',
         nav_view: 'View Consumption',
         nav_settings: 'Settings',
-        app_title: 'Utility Consumption Tracker',
+        app_title: 'Household Utility Tracker',
         add_readings_title: 'Add / Update Meter Readings',
         period_select_info: 'Select the year and month to define the period for this reading.',
         year: 'Year',

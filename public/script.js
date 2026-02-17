@@ -56,6 +56,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const isUpdate = updateStatus.textContent !== '';
         submitBtn.textContent = isUpdate ? t('update_btn') : t('save_btn');
         if (isUpdate) updateStatus.textContent = t('updating_existing');
+
+        // Update document title
+        document.title = t('app_title');
     };
 
     // --- Helper Functions ---
