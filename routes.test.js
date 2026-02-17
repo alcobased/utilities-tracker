@@ -23,6 +23,8 @@ const mockDb = {
     },
     getReading: async (periodId) => mockDb.readings[periodId],
     deleteReading: async (periodId) => { delete mockDb.readings[periodId]; },
+    getSettings: async () => ({}),
+    updateSettings: async (settings) => settings,
 };
 
 jest.unstable_mockModule('./db.js', () => mockDb);
@@ -104,7 +106,7 @@ describe('API Routes with Full Metrics', () => {
 
         const response = await request(app).get('/api/readings');
         expect(response.status).toBe(200);
-        expect(response.body).toHaveLength(1);
+        expect(response.body).toHaveLength(2);
 
         const consumption = response.body[0];
         expect(consumption.period).toBe('2024-06');
