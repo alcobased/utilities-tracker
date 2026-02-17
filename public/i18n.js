@@ -57,7 +57,17 @@ const translations = {
         bill_amount_label: 'Bill Amount (€)',
         cost: 'Cost',
         hh1_na_label: 'Household 1 (Not measured)',
-        bill: 'Bill'
+        bill: 'Bill',
+        updated: 'Updated',
+        calculation: 'Calculation',
+        calc_delta: 'Current Reading - Previous Reading',
+        calc_sub_elec: 'Total Consumption - HH1 - HH2',
+        calc_sub_other: 'Total Consumption - HH2',
+        calc_share_prev: 'Bill split based on previous month\'s consumption',
+        calc_share_curr: 'Bill split based on current month\'s consumption',
+        calc_sum_hh: 'Sum of Electricity, Gas, and Water costs',
+        calc_sum_grand: 'Sum of HH1 and HH2 totals',
+        calc_sum_sub: 'Sum of HH1 and HH2 costs'
     },
     lt: {
         nav_add: 'Pridėti rodmenis',
@@ -117,7 +127,17 @@ const translations = {
         bill_amount_label: 'Sąskaitos suma (€)',
         cost: 'Kaina',
         hh1_na_label: '1-as namų ūkis (nematuojama)',
-        bill: 'Sąskaita'
+        bill: 'Sąskaita',
+        updated: 'Atnaujinta',
+        calculation: 'Skaičiavimas',
+        calc_delta: 'Dabartinis rodmuo - Ankstesnis rodmuo',
+        calc_sub_elec: 'Bendras suvartojimas - 1 NŪ - 2 NŪ',
+        calc_sub_other: 'Bendras suvartojimas - 2 NŪ',
+        calc_share_prev: 'Sąskaitos padalinimas pagal praėjusio mėnesio suvartojimą',
+        calc_share_curr: 'Sąskaitos padalinimas pagal einamojo mėnesio suvartojimą',
+        calc_sum_hh: 'Elektros, dujų ir vandens išlaidų suma',
+        calc_sum_grand: '1 NŪ ir 2 NŪ sumų suma',
+        calc_sum_sub: '1 NŪ ir 2 NŪ išlaidų suma'
     }
 };
 

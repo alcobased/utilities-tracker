@@ -126,20 +126,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const formatVal = (val) => (val === null || val === undefined) ? '-' : Math.round(val).toString();
 
+        const getTooltip = (period, name, subName, unit, calcType) => {
+            let text = `${t(name)} - ${t(subName)} (${unit})`;
+            text += `\n${t('period')}: ${period}`;
+            text += `\n${t('calculation')}: `;
+
+            if (calcType === 'delta') {
+                text += t('calc_delta');
+            } else if (calcType === 'elec_common') {
+                text += t('calc_sub_elec');
+            } else if (calcType === 'other_common') { // Using 'other_common' for consistency with i18n key 'calc_sub_other'
+                text += t('calc_sub_other');
+            }
+            return text;
+        };
+
         consumptionData.forEach(data => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="sticky-column">${data.period}</td>
-                <td class="theme-electricity">${formatVal(data.electricity_total)}</td>
-                <td class="theme-electricity">${formatVal(data.electricity_hh1)}</td>
-                <td class="theme-electricity">${formatVal(data.electricity_hh2)}</td>
-                <td class="theme-electricity">${formatVal(data.electricity_common)}</td>
-                <td class="theme-gas">${formatVal(data.gas_total)}</td>
-                <td class="theme-gas">${formatVal(data.gas_hh1)}</td>
-                <td class="theme-gas">${formatVal(data.gas_hh2)}</td>
-                <td class="theme-water">${formatVal(data.water_total)}</td>
-                <td class="theme-water">${formatVal(data.water_child || data.water_hh1)}</td>
-                <td class="theme-water">${formatVal(data.water_hh2)}</td>
+                <td class="sticky-column" data-tooltip="${t('period')}: ${data.period}">${data.period}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(data.period, 'electricity', 'total', 'kWh', 'delta')}">${formatVal(data.electricity_total)}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(data.period, 'electricity', 'hh1', 'kWh', 'delta')}">${formatVal(data.electricity_hh1)}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(data.period, 'electricity', 'hh2', 'kWh', 'delta')}">${formatVal(data.electricity_hh2)}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(data.period, 'electricity', 'common', 'kWh', 'elec_common')}">${formatVal(data.electricity_common)}</td>
+                <td class="theme-gas" data-tooltip="${getTooltip(data.period, 'gas', 'total', 'm³', 'delta')}">${formatVal(data.gas_total)}</td>
+                <td class="theme-gas" data-tooltip="${getTooltip(data.period, 'gas', 'hh1', 'm³', 'other_common')}">${formatVal(data.gas_hh1)}</td>
+                <td class="theme-gas" data-tooltip="${getTooltip(data.period, 'gas', 'hh2', 'm³', 'delta')}">${formatVal(data.gas_hh2)}</td>
+                <td class="theme-water" data-tooltip="${getTooltip(data.period, 'water', 'total', 'm³', 'delta')}">${formatVal(data.water_total)}</td>
+                <td class="theme-water" data-tooltip="${getTooltip(data.period, 'water', 'hh1', 'm³', 'other_common')}">${formatVal(data.water_child || data.water_hh1)}</td>
+                <td class="theme-water" data-tooltip="${getTooltip(data.period, 'water', 'hh2', 'm³', 'delta')}">${formatVal(data.water_hh2)}</td>
                 <td><button class="delete-btn" data-id="${data.period}">${t('delete_btn')}</button></td>
             `;
             consumptionTableBody.appendChild(tr);
@@ -154,6 +169,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const formatVal = (val) => (val === null || val === undefined) ? '-' : val.toFixed(2);
+
+        const getTooltip = (period, name, subName, calcType) => {
+            let text = `${t(name)}`;
+            if (subName) text += ` - ${t(subName)}`;
+            text += ` (€)`;
+            text += `\n${t('period')}: ${period}`;
+            text += `\n${t('calculation')}: `;
+
+            if (calcType === 'prev') text += t('calc_share_prev');
+            else if (calcType === 'curr') text += t('calc_share_curr');
+            else if (calcType === 'sum_hh') text += t('calc_sum_hh');
+            else if (calcType === 'sum_grand') text += t('calc_sum_grand');
+            else if (calcType === 'sum_sub') text += t('calc_sum_sub');
+
+            return text;
+        };
 
         consumptionData.forEach(data => {
             const tr = document.createElement('tr');
@@ -175,19 +206,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const grandTotal = totalHH1 + totalHH2;
 
             tr.innerHTML = `
-                <td class="sticky-column">${data.period}</td>
-                <td class="theme-electricity">${formatVal(elecHH1)}</td>
-                <td class="theme-electricity">${formatVal(elecHH2)}</td>
-                <td class="theme-electricity"><strong>${formatVal(elecTotal)}</strong></td>
-                <td class="theme-gas">${formatVal(gasHH1)}</td>
-                <td class="theme-gas">${formatVal(gasHH2)}</td>
-                <td class="theme-gas"><strong>${formatVal(gasTotal)}</strong></td>
-                <td class="theme-water">${formatVal(waterHH1)}</td>
-                <td class="theme-water">${formatVal(waterHH2)}</td>
-                <td class="theme-water"><strong>${formatVal(waterTotal)}</strong></td>
-                <td class="hh-total"><strong>${formatVal(totalHH1)}</strong></td>
-                <td class="hh-total"><strong>${formatVal(totalHH2)}</strong></td>
-                <td class="grand-total"><strong>${formatVal(grandTotal)}</strong></td>
+                <td class="sticky-column" data-tooltip="${t('period')}: ${data.period}">${data.period}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(data.period, 'electricity', 'hh1', 'prev')}">${formatVal(elecHH1)}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(data.period, 'electricity', 'hh2', 'prev')}">${formatVal(elecHH2)}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(data.period, 'electricity', 'total', 'sum_sub')}"><strong>${formatVal(elecTotal)}</strong></td>
+                <td class="theme-gas" data-tooltip="${getTooltip(data.period, 'gas', 'hh1', 'curr')}">${formatVal(gasHH1)}</td>
+                <td class="theme-gas" data-tooltip="${getTooltip(data.period, 'gas', 'hh2', 'curr')}">${formatVal(gasHH2)}</td>
+                <td class="theme-gas" data-tooltip="${getTooltip(data.period, 'gas', 'total', 'sum_sub')}"><strong>${formatVal(gasTotal)}</strong></td>
+                <td class="theme-water" data-tooltip="${getTooltip(data.period, 'water', 'hh1', 'prev')}">${formatVal(waterHH1)}</td>
+                <td class="theme-water" data-tooltip="${getTooltip(data.period, 'water', 'hh2', 'prev')}">${formatVal(waterHH2)}</td>
+                <td class="theme-water" data-tooltip="${getTooltip(data.period, 'water', 'total', 'sum_sub')}"><strong>${formatVal(waterTotal)}</strong></td>
+                <td class="hh-total" data-tooltip="${getTooltip(data.period, 'hh1', 'total', 'sum_hh')}"><strong>${formatVal(totalHH1)}</strong></td>
+                <td class="hh-total" data-tooltip="${getTooltip(data.period, 'hh2', 'total', 'sum_hh')}"><strong>${formatVal(totalHH2)}</strong></td>
+                <td class="grand-total" data-tooltip="${getTooltip(data.period, 'grand_total', '', 'sum_grand')}"><strong>${formatVal(grandTotal)}</strong></td>
             `;
             billSplitsBody.appendChild(tr);
         });
@@ -203,21 +234,41 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         rawReadings.forEach(data => {
             const tr = document.createElement('tr');
-            const formatReading = (val) => (val === null || val === undefined) ? '-' : Math.round(val.value).toString();
-            const formatBill = (val) => (val === null || val === undefined) ? '-' : val.value.toFixed(2);
+
+            // Helper to extract value safely
+            const getVal = (obj) => (obj && obj.value !== undefined && obj.value !== null) ? obj.value : null;
+
+            const formatReading = (obj) => {
+                const val = getVal(obj);
+                return val === null ? '-' : Math.round(val).toString();
+            };
+
+            const formatBill = (obj) => {
+                const val = getVal(obj);
+                return val === null ? '-' : val.toFixed(2);
+            };
+
+            const getTooltip = (label, obj) => {
+                let text = label;
+                text += `\n${t('period')}: ${data.id}`;
+                if (obj && obj.updatedAt) {
+                    text += `\n${t('updated')}: ${new Date(obj.updatedAt).toISOString().replace('T', ' ').substring(0, 19)}`;
+                }
+                return text;
+            };
 
             tr.innerHTML = `
-                <td class="sticky-column">${data.id}</td>
-                <td class="theme-electricity">${formatReading(data.electricity_total)}</td>
-                <td class="theme-electricity">${formatReading(data.electricity_hh1)}</td>
-                <td class="theme-electricity">${formatReading(data.electricity_hh2)}</td>
-                <td class="theme-electricity">${formatBill(data.electricity_bill)}</td>
-                <td class="theme-gas">${formatReading(data.gas_total)}</td>
-                <td class="theme-gas">${formatReading(data.gas_hh2)}</td>
-                <td class="theme-gas">${formatBill(data.gas_bill)}</td>
-                <td class="theme-water">${formatReading(data.water_total)}</td>
-                <td class="theme-water">${formatReading(data.water_hh2)}</td>
-                <td class="theme-water">${formatBill(data.water_bill)}</td>
+                <td class="sticky-column" data-tooltip="${t('period')}: ${data.id}">${data.id}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(`${t('electricity')} - ${t('total')} (kWh)`, data.electricity_total)}">${formatReading(data.electricity_total)}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(`${t('electricity')} - ${t('hh1')} (kWh)`, data.electricity_hh1)}">${formatReading(data.electricity_hh1)}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(`${t('electricity')} - ${t('hh2')} (kWh)`, data.electricity_hh2)}">${formatReading(data.electricity_hh2)}</td>
+                <td class="theme-electricity" data-tooltip="${getTooltip(`${t('electricity')} - ${t('bill')} (€)`, data.electricity_bill)}">${formatBill(data.electricity_bill)}</td>
+                <td class="theme-gas" data-tooltip="${getTooltip(`${t('gas')} - ${t('total')} (m³)`, data.gas_total)}">${formatReading(data.gas_total)}</td>
+                <td class="theme-gas" data-tooltip="${getTooltip(`${t('gas')} - ${t('hh2')} (m³)`, data.gas_hh2)}">${formatReading(data.gas_hh2)}</td>
+                <td class="theme-gas" data-tooltip="${getTooltip(`${t('gas')} - ${t('bill')} (€)`, data.gas_bill)}">${formatBill(data.gas_bill)}</td>
+                <td class="theme-water" data-tooltip="${getTooltip(`${t('water')} - ${t('total')} (m³)`, data.water_total)}">${formatReading(data.water_total)}</td>
+                <td class="theme-water" data-tooltip="${getTooltip(`${t('water')} - ${t('hh2')} (m³)`, data.water_hh2)}">${formatReading(data.water_hh2)}</td>
+                <td class="theme-water" data-tooltip="${getTooltip(`${t('water')} - ${t('bill')} (€)`, data.water_bill)}">${formatBill(data.water_bill)}</td>
                 <td><button class="delete-btn" data-id="${data.id}">${t('delete_btn')}</button></td>
             `;
             rawTableBody.appendChild(tr);
@@ -277,6 +328,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     monthSelect.value = currentMonth;
     checkExistingReading();
+
+    // --- Tooltip Logic ---
+    const tooltip = document.createElement('div');
+    tooltip.className = 'custom-tooltip';
+    document.body.appendChild(tooltip);
+
+    let tooltipTimeout;
+
+    document.addEventListener('mouseover', (e) => {
+        const target = e.target.closest('[data-tooltip]');
+        if (target) {
+            clearTimeout(tooltipTimeout);
+            tooltip.textContent = target.getAttribute('data-tooltip');
+            tooltip.classList.add('visible');
+
+            const rect = target.getBoundingClientRect();
+            // Position above the element, centered horizontally
+            tooltip.style.left = `${rect.left + rect.width / 2}px`;
+            tooltip.style.top = `${rect.top + window.scrollY}px`; // Adjust if needed based on CSS transform
+
+            // Adjust for edges (optional, simple logic first)
+        }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+        const target = e.target.closest('[data-tooltip]');
+        if (target) {
+            tooltipTimeout = setTimeout(() => {
+                tooltip.classList.remove('visible');
+            }, 50);
+        }
+    });
+
+    // Optional: Follow mouse for smoother feel on large cells? 
+    // Or stick to element-based positioning which is cleaner for tables.
+    // Let's stick to element-based for now as it's less jumpy.
 
     // --- Event Listeners ---
     const menuToggle = document.getElementById('menu-toggle');
