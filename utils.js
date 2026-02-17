@@ -59,19 +59,19 @@ function calculateConsumption(current, previous, previousConsumption) {
 
     // Derived consumption for sub-meters (current period)
     if (consumption.electricity_total !== null && consumption.electricity_hh1 !== null && consumption.electricity_hh2 !== null) {
-        consumption.electricity_common = Math.max(0, consumption.electricity_total - consumption.electricity_hh1 - consumption.electricity_hh2);
+        consumption.electricity_common = consumption.electricity_total - consumption.electricity_hh1 - consumption.electricity_hh2;
     } else {
         consumption.electricity_common = null;
     }
 
     if (consumption.gas_total !== null && consumption.gas_hh2 !== null) {
-        consumption.gas_hh1 = Math.max(0, consumption.gas_total - consumption.gas_hh2);
+        consumption.gas_hh1 = consumption.gas_total - consumption.gas_hh2;
     } else {
         consumption.gas_hh1 = null;
     }
 
     if (consumption.water_total !== null && consumption.water_hh2 !== null) {
-        consumption.water_hh1 = Math.max(0, consumption.water_total - consumption.water_hh2);
+        consumption.water_hh1 = consumption.water_total - consumption.water_hh2;
     } else {
         consumption.water_hh1 = null;
     }

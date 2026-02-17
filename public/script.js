@@ -158,18 +158,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         consumptionData.forEach(data => {
             const tr = document.createElement('tr');
 
-            const totalHH1 = (data.electricity_cost_hh1 || 0) + (data.gas_cost_hh1 || 0) + (data.water_cost_hh1 || 0);
-            const totalHH2 = (data.electricity_cost_hh2 || 0) + (data.gas_cost_hh2 || 0) + (data.water_cost_hh2 || 0);
+            const elecHH1 = data.electricity_cost_hh1 || 0;
+            const elecHH2 = data.electricity_cost_hh2 || 0;
+            const elecTotal = elecHH1 + elecHH2;
+
+            const gasHH1 = data.gas_cost_hh1 || 0;
+            const gasHH2 = data.gas_cost_hh2 || 0;
+            const gasTotal = gasHH1 + gasHH2;
+
+            const waterHH1 = data.water_cost_hh1 || 0;
+            const waterHH2 = data.water_cost_hh2 || 0;
+            const waterTotal = waterHH1 + waterHH2;
+
+            const totalHH1 = elecHH1 + gasHH1 + waterHH1;
+            const totalHH2 = elecHH2 + gasHH2 + waterHH2;
             const grandTotal = totalHH1 + totalHH2;
 
             tr.innerHTML = `
                 <td class="sticky-column">${data.period}</td>
-                <td class="theme-electricity">${formatVal(data.electricity_cost_hh1)}</td>
-                <td class="theme-electricity">${formatVal(data.electricity_cost_hh2)}</td>
-                <td class="theme-gas">${formatVal(data.gas_cost_hh1)}</td>
-                <td class="theme-gas">${formatVal(data.gas_cost_hh2)}</td>
-                <td class="theme-water">${formatVal(data.water_cost_hh1)}</td>
-                <td class="theme-water">${formatVal(data.water_cost_hh2)}</td>
+                <td class="theme-electricity">${formatVal(elecHH1)}</td>
+                <td class="theme-electricity">${formatVal(elecHH2)}</td>
+                <td class="theme-electricity"><strong>${formatVal(elecTotal)}</strong></td>
+                <td class="theme-gas">${formatVal(gasHH1)}</td>
+                <td class="theme-gas">${formatVal(gasHH2)}</td>
+                <td class="theme-gas"><strong>${formatVal(gasTotal)}</strong></td>
+                <td class="theme-water">${formatVal(waterHH1)}</td>
+                <td class="theme-water">${formatVal(waterHH2)}</td>
+                <td class="theme-water"><strong>${formatVal(waterTotal)}</strong></td>
                 <td class="hh-total"><strong>${formatVal(totalHH1)}</strong></td>
                 <td class="hh-total"><strong>${formatVal(totalHH2)}</strong></td>
                 <td class="grand-total"><strong>${formatVal(grandTotal)}</strong></td>

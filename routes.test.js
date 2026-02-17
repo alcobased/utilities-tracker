@@ -177,4 +177,26 @@ describe('Utils', () => {
         expect(result.gas_hh1).toBe(5);
         expect(result.electricity_common).toBe(20); // 150-100 - (80-60) - (50-40) = 50 - 20 - 10 = 20
     });
+
+    test('calculateConsumption should allow negative derived values', () => {
+        const current = {
+            gas_total: { value: 110 }, gas_hh2: { value: 60 },
+            electricity_total: { value: 100 }, electricity_hh1: { value: 50 }, electricity_hh2: { value: 60 }
+        };
+        const previous = {
+            gas_total: { value: 100 }, gas_hh2: { value: 35 },
+            electricity_total: { value: 90 }, electricity_hh1: { value: 40 }, electricity_hh2: { value: 45 }
+        };
+
+        const result = calculateConsumption(current, previous, null);
+
+        // Gas: Total delta = 10, HH2 delta = 25. HH1 = Total - HH2 = 10 - 25 = -15
+        expect(result.gas_total).toBe(10);
+        expect(result.gas_hh2).toBe(25);
+        expect(result.gas_hh1).toBe(-15);
+
+        // Electricity: Total delta = 10, HH1 delta = 10, HH2 delta = 15.
+        // Common = Total - HH1 - HH2 = 10 - 10 - 15 = -15
+        expect(result.electricity_common).toBe(-15);
+    });
 });
