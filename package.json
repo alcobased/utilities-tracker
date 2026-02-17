@@ -5,11 +5,11 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "seed": "node seed.js",
-    "seed:incomplete": "node seed.js --incomplete"
+    "dev": "nodemon --env-file=.env server.js",
+    "start": "node --env-file=.env server.js",
+    "test": "node --env-file=.env --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "seed": "node --env-file=.env seed.js",
+    "seed:incomplete": "node --env-file=.env seed.js --incomplete"
   },
   "author": "",
   "license": "ISC",

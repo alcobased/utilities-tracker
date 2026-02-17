@@ -38,11 +38,11 @@ This project is a back-end application or API built with Node.js and the Express
 You can easily integrate powerful generative AI features into your Express application using the official Google AI Gemini SDK.
 
 **1. Installation:**
-First, add the necessary packages to your project:
+First, add the necessary package to your project:
 ```bash
-npm install @google/generative-ai dotenv
+npm install @google/generative-ai
 ```
-The `dotenv` package is used to manage environment variables for your API key.
+Environment variables are managed using Node.js's native `--env-file` flag (available in Node.js 20.6.0+).
 
 **2. Secure API Key Setup:**
 Never hard-code your API key. Create a `.env` file in your project's root directory and add your key:
@@ -57,8 +57,8 @@ Here is a complete example of how to add a new route to your Express app that us
 
 **File: `index.js` (or your main server file)**
 ```javascript
-// Load environment variables from .env file
-require('dotenv').config();
+// Environment variables are loaded via the --env-file flag in the start script
+// e.g., node --env-file=.env index.js
 
 const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
